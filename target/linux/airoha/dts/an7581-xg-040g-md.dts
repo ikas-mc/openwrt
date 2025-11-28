@@ -42,26 +42,26 @@
 	leds {
 		compatible = "gpio-leds";
 
-		led-0 {
+		pwr_led: led-0 {
 			label = "pwr";
-			color = <0x01>;
-			function = "power";
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_POWER;
 			gpios = <0x24 0x11 0x01>;
 			default-state = "on";
 		};
 
-		led-2 {
+		pon_led: led-2 {
 			label = "pon";
-			color = <0x02>;
-			function = "status";
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
 			gpios = <0x24 0x13 0x01>;
 			default-state = "off";
 		};
 
-		led-3 {
+		internet_led: led-3 {
 			label = "internet";
-			color = <0x02>;
-			function = "status";
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
 			gpios = <0x24 0x14 0x01>;
 			default-state = "on";
 		};
