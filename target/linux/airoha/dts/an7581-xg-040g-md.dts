@@ -39,6 +39,17 @@
         reg = <0x0 0x80000000 0x2 0x00000000>;
     };
 
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		poll-interval = <100>;
+		
+		btn0 {
+			label = "reset";
+			linux,code = <KEY_RESTART>;
+			gpios = <&en7581_pinctrl 0 GPIO_ACTIVE_LOW>;
+		};
+	};
+
 	leds {
 		compatible = "gpio-leds";
 
@@ -46,15 +57,23 @@
 			label = "pwr";
 			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_POWER;
-			gpios = <0x24 0x11 0x01>;
+			gpios = <&en7581_pinctrl 17 GPIO_ACTIVE_LOW>;
 			default-state = "on";
+		};
+
+		reg_led: led-1 {
+			label = "reg";
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
+			gpios = <&en7581_pinctrl 18 GPIO_ACTIVE_LOW>;
+			default-state = "off";
 		};
 
 		pon_led: led-2 {
 			label = "pon";
-			color = <LED_COLOR_ID_GREEN>;
+			color = <LED_COLOR_ID_RED>;
 			function = LED_FUNCTION_STATUS;
-			gpios = <0x24 0x13 0x01>;
+			gpios = <&en7581_pinctrl 19 GPIO_ACTIVE_LOW>;
 			default-state = "off";
 		};
 
@@ -62,7 +81,7 @@
 			label = "internet";
 			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_STATUS;
-			gpios = <0x24 0x14 0x01>;
+			gpios = <&en7581_pinctrl 20 GPIO_ACTIVE_LOW>;
 			default-state = "on";
 		};
 	};
