@@ -278,7 +278,6 @@
 			compatible = "ethernet-phy-id03a2.a411", "ethernet-phy-ieee802.3-c45";
 			reg = <15>;
             phy-mode = "2500base-x";
-			phandle = <0x38>;
 		};
 	};
 };
