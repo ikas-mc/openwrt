@@ -331,12 +331,14 @@ static int __init rtl83xx_mdio_probe(struct rtl838x_switch_priv *priv)
 			continue;
 		}
 
-		priv->pcs[pn] = rtpcs_create(priv->dev, pcs_node, pn);
-		if (IS_ERR(priv->pcs[pn])) {
-			dev_err(priv->dev, "port %u failed to create PCS instance: %ld\n",
-				pn, PTR_ERR(priv->pcs[pn]));
-			priv->pcs[pn] = NULL;
-			continue;
+		if (pcs_node) {
+			priv->pcs[pn] = rtpcs_create(priv->dev, pcs_node, pn);
+			if (IS_ERR(priv->pcs[pn])) {
+				dev_err(priv->dev, "port %u failed to create PCS instance: %ld\n",
+					pn, PTR_ERR(priv->pcs[pn]));
+				priv->pcs[pn] = NULL;
+				continue;
+			}
 		}
 
 		if (of_get_phy_mode(dn, &interface))
@@ -1681,8 +1683,8 @@ static const struct of_device_id rtl83xx_switch_of_ids[] = {
 MODULE_DEVICE_TABLE(of, rtl83xx_switch_of_ids);
 
 static struct platform_driver rtl83xx_switch_driver = {
-	.probe = rtl83xx_sw_probe,
-	.remove_new = rtl83xx_sw_remove,
+	.probe  = rtl83xx_sw_probe,
+	.remove = rtl83xx_sw_remove,
 	.driver = {
 		.name = "rtl83xx-switch",
 		.pm = NULL,
