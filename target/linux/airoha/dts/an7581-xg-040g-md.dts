@@ -228,7 +228,7 @@
 	};
 
 	mdio {
-		ethernet-phy@1 {
+		ethernet-phy@9 {
 			status = "okay";
 			pinctrl-names = "gbe-led";
 			pinctrl-0 = <&gswp2_led0_pins>;
@@ -243,7 +243,7 @@
 			};
 		};
 
-		ethernet-phy@2 {
+		ethernet-phy@a {
 			status = "okay";
 			pinctrl-names = "gbe-led";
 			pinctrl-0 = <&gswp3_led0_pins>;
@@ -258,7 +258,7 @@
 			};
 		};
 
-		ethernet-phy@3 {
+		ethernet-phy@b {
 			status = "okay";
 			pinctrl-names = "gbe-led";
 			pinctrl-0 = <&gswp4_led0_pins>;
