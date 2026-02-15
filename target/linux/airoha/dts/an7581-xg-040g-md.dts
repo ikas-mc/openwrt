@@ -139,6 +139,9 @@
 		partition@80000 {
 			label = "env";
 			reg = <0x00080000 0x00080000>;
+			compatible = "u-boot,env";
+
+			macaddr_eth: ethaddr { };
 		};
 
 		partition@100000 {
@@ -158,6 +161,8 @@
 
 &gdm1 {
 	status = "okay";
+	nvmem-cells = <&macaddr_eth>;
+	nvmem-cell-names = "mac-address";
 };
 
 &gdm4 {
@@ -165,6 +170,9 @@
 	phy-handle = <&phy15>;
 	phy-mode = "2500base-x";
 	label = "eth1";
+	nvmem-cells = <&macaddr_eth>;
+	nvmem-cell-names = "mac-address";
+	mac-address-increment = <1>;
 };
 
 &switch {
@@ -265,4 +273,8 @@
 	status = "okay";
 	phys = <&usb1_phy PHY_TYPE_USB2>;
 	mediatek,u3p-dis-msk = <0x1>;
+};
+
+&afe {
+	status = "disabled";
 };
