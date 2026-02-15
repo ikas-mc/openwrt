@@ -3,7 +3,7 @@
 #include <net/dsa.h>
 #include <linux/etherdevice.h>
 #include <linux/if_bridge.h>
-#include <asm/mach-rtl838x/mach-rtl83xx.h>
+#include <asm/mach-rtl-otto/mach-rtl-otto.h>
 
 #include "rtl83xx.h"
 
@@ -60,8 +60,6 @@ static void rtldsa_enable_phy_polling(struct rtl838x_switch_priv *priv)
 	/* PHY update complete, there is no global PHY polling enable bit on the 93xx */
 	if (priv->family_id == RTL8390_FAMILY_ID)
 		sw_w32_mask(0, BIT(7), RTL839X_SMI_GLB_CTRL);
-	else if (priv->family_id == RTL8380_FAMILY_ID)
-		sw_w32_mask(0, BIT(15), RTL838X_SMI_GLB_CTRL);
 }
 
 const struct rtldsa_mib_list_item rtldsa_838x_mib_list[] = {
@@ -430,7 +428,7 @@ static enum dsa_tag_protocol rtldsa_get_tag_protocol(struct dsa_switch *ds,
 	/* The switch does not tag the frames, instead internally the header
 	 * structure for each packet is tagged accordingly.
 	 */
-	return DSA_TAG_PROTO_TRAILER;
+	return DSA_TAG_PROTO_RTL_OTTO;
 }
 
 static void rtldsa_vlan_set_pvid(struct rtl838x_switch_priv *priv,
@@ -546,11 +544,7 @@ static int rtldsa_83xx_setup(struct dsa_switch *ds)
 			priv->r->set_static_move_action(i, true);
 	}
 
-	if (priv->family_id == RTL8380_FAMILY_ID)
-		rtl838x_print_matrix();
-	else
-		rtl839x_print_matrix();
-
+	priv->r->print_matrix();
 	rtldsa_83xx_init_stats(priv);
 	rtldsa_init_counters(priv);
 
@@ -618,10 +612,7 @@ static int rtldsa_93xx_setup(struct dsa_switch *ds)
 	if (priv->family_id == RTL9310_FAMILY_ID)
 		rtldsa_931x_config_phy_ability_source(priv);
 
-	if (priv->family_id == RTL9300_FAMILY_ID)
-		rtl930x_print_matrix();
-	else if (priv->family_id == RTL9310_FAMILY_ID)
-		rtl931x_print_matrix();
+	priv->r->print_matrix();
 
 	/* TODO: Initialize statistics */
 	rtldsa_init_counters(priv);
@@ -729,22 +720,6 @@ static void rtldsa_83xx_phylink_mac_config(struct dsa_switch *ds, int port,
 	sw_w32(mcr, priv->r->mac_force_mode_ctrl(port));
 }
 
-static void rtldsa_931x_phylink_mac_config(struct dsa_switch *ds, int port,
-					   unsigned int mode,
-					   const struct phylink_link_state *state)
-{
-	struct rtl838x_switch_priv *priv = ds->priv;
-	u32 reg;
-
-	reg = sw_r32(priv->r->mac_force_mode_ctrl(port));
-	pr_info("%s reading FORCE_MODE_CTRL: %08x\n", __func__, reg);
-
-	/* Disable MAC completely so PCS can setup the SerDes */
-	reg = 0;
-
-	sw_w32(reg, priv->r->mac_force_mode_ctrl(port));
-}
-
 static void rtldsa_93xx_phylink_mac_config(struct dsa_switch *ds, int port,
 					   unsigned int mode,
 					   const struct phylink_link_state *state)
@@ -755,11 +730,8 @@ static void rtldsa_93xx_phylink_mac_config(struct dsa_switch *ds, int port,
 	if (port == priv->cpu_port)
 		return;
 
-	if (priv->family_id == RTL9310_FAMILY_ID)
-		return rtldsa_931x_phylink_mac_config(ds, port, mode, state);
-
 	/* Disable MAC completely */
-	sw_w32(0, RTL930X_MAC_FORCE_MODE_CTRL + 4 * port);
+	sw_w32(0, priv->r->mac_force_mode_ctrl(port));
 }
 
 static void rtldsa_83xx_phylink_mac_link_down(struct dsa_switch *ds, int port,

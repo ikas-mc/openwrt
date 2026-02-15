@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
-#include <asm/mach-rtl838x/mach-rtl83xx.h>
+#include <asm/mach-rtl-otto/mach-rtl-otto.h>
 #include <linux/etherdevice.h>
 #include <linux/inetdevice.h>
 
@@ -124,7 +124,7 @@ static enum template_field_id fixed_templates[N_FIXED_TEMPLATES][N_FIXED_FIELDS]
 	},
 };
 
-void rtl930x_print_matrix(void)
+void rtldsa_930x_print_matrix(void)
 {
 	struct table_reg *r = rtl_table_get(RTL9300_TBL_0, 6);
 
@@ -867,7 +867,7 @@ void rtl9300_dump_debug(void)
 	}
 	pr_debug("# %08x %08x %08x %08x %08x\n",
 		 sw_r32(r), sw_r32(r + 4), sw_r32(r + 8), sw_r32(r + 12), sw_r32(r + 16));
-	rtl930x_print_matrix();
+	rtldsa_930x_print_matrix();
 	pr_debug("RTL930X_L2_PORT_SABLK_CTRL: %08x, RTL930X_L2_PORT_DABLK_CTRL %08x\n",
 		 sw_r32(RTL930X_L2_PORT_SABLK_CTRL), sw_r32(RTL930X_L2_PORT_DABLK_CTRL)
 
@@ -2614,7 +2614,7 @@ static void rtldsa_930x_qos_init(struct rtl838x_switch_priv *priv)
 	rtldsa_930x_qos_set_scheduling_queue_weights(priv);
 }
 
-const struct rtl838x_reg rtl930x_reg = {
+const struct rtldsa_config rtldsa_930x_cfg = {
 	.mask_port_reg_be = rtl838x_mask_port_reg,
 	.set_port_reg_be = rtl838x_set_port_reg,
 	.get_port_reg_be = rtl838x_get_port_reg,
@@ -2662,6 +2662,7 @@ const struct rtl838x_reg rtl930x_reg = {
 	.get_mirror_config = rtldsa_930x_get_mirror_config,
 	.port_rate_police_add = rtldsa_930x_port_rate_police_add,
 	.port_rate_police_del = rtldsa_930x_port_rate_police_del,
+	.print_matrix = rtldsa_930x_print_matrix,
 	.read_l2_entry_using_hash = rtl930x_read_l2_entry_using_hash,
 	.write_l2_entry_using_hash = rtl930x_write_l2_entry_using_hash,
 	.read_cam = rtl930x_read_cam,

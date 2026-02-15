@@ -3,7 +3,7 @@
 #ifndef _RTL838X_H
 #define _RTL838X_H
 
-#include <asm/mach-rtl838x/mach-rtl83xx.h>
+#include <asm/mach-rtl-otto/mach-rtl-otto.h>
 #include <net/dsa.h>
 
 /* Register definition */
@@ -1231,7 +1231,7 @@ struct rtldsa_mirror_config {
 	u32 val;
 };
 
-struct rtl838x_reg {
+struct rtldsa_config {
 	void (*mask_port_reg_be)(u64 clear, u64 set, int reg);
 	void (*set_port_reg_be)(u64 set, int reg);
 	u64 (*get_port_reg_be)(int reg);
@@ -1301,6 +1301,7 @@ struct rtl838x_reg {
 				    const struct flow_action_entry *act, bool ingress);
 	int (*port_rate_police_del)(struct dsa_switch *ds, int port, struct flow_cls_offload *cls,
 				    bool ingress);
+	void (*print_matrix)(void);
 	u64 (*read_l2_entry_using_hash)(u32 hash, u32 position, struct rtl838x_l2_entry *e);
 	void (*write_l2_entry_using_hash)(u32 hash, u32 pos, struct rtl838x_l2_entry *e);
 	u64 (*read_cam)(int idx, struct rtl838x_l2_entry *e);
@@ -1355,7 +1356,7 @@ struct rtl838x_switch_priv {
 	int link_state_irq;
 	int mirror_group_ports[4];
 	struct mii_bus *parent_bus;
-	const struct rtl838x_reg *r;
+	const struct rtldsa_config *r;
 	u8 cpu_port;
 	u8 port_mask;
 	u8 port_width;
